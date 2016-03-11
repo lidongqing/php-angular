@@ -1,0 +1,21 @@
+{
+    "name": "php-angular/php-angular",
+    "description": "php angular view engine",
+    "homepage": "http://zhaishuaigan.cn/php-angular",
+    "license": "Apache2",
+    "authors": [
+        {
+            "name": "玩具机器人",
+            "email": "zhaishuaigan@qq.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/php-angular/php-angular/issues"
+    },
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "classmap" : "src/"
+    }
+}
