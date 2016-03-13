@@ -29,7 +29,7 @@
 
 ## 结合框架使用
 
-> 具体的框架驱动可以在 /drivers 目录中找到
+> 具体的框架驱动可以在 https://github.com/php-angular 中找到
 
 ## 使用说明
 
