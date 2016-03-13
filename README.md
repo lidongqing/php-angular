@@ -5,19 +5,19 @@
 
 ## 目前实现了以下几种标签和用法
 **标签**  
-1. php-if
-2. php-for
-3. php-foreach
-4. php-repeat
-5. php-show
-6. php-hide
-7. php-include
-8. php-init
-9. php-exec
-10. php-after
-11. php-before
-12. php-function
-13. php-call
+1. php-if  
+2. php-for  
+3. php-foreach  
+4. php-repeat  
+5. php-show  
+6. php-hide  
+7. php-include  
+8. php-init  
+9. php-exec  
+10. php-after  
+11. php-before  
+12. php-function  
+13. php-call  
 
 **变量输出**  
 {$var}  
@@ -42,7 +42,7 @@
 ~~~
 <?php
 
-require '../lib/angular.php';
+require '../src/Angular.php';
 
 // 配置
 $config = array(
