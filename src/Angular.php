@@ -1,5 +1,13 @@
 <?php
 
+// +----------------------------------------------------------------------
+// | OneThink [ WE CAN DO IT JUST THINK IT ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2014 http://www.onethink.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: 翟帅干 <zhaishuaigan@qq.com> <http://zhaishuaigan.cn>
+// +----------------------------------------------------------------------
+
 /**
  * Angular模板引擎
  */
@@ -61,7 +69,7 @@ class Angular {
      * @param array $tpl_var 模板变量
      */
     public function display($tpl_file, $tpl_var = array()) {
-       echo $this->fetch($tpl_file, $tpl_var);
+        echo $this->fetch($tpl_file, $tpl_var);
     }
 
     /**
@@ -106,7 +114,7 @@ class Angular {
                 if (method_exists($this, $method)) {
                     $content = $this->$method($content, $sub);
                 } else {
-                    E("模板属性" . $this->config['attr'] . $sub['attr'] . '没有对应的解析规则');
+                    die("模板属性" . $this->config['attr'] . $sub['attr'] . '没有对应的解析规则');
                     break;
                 }
             } else {
@@ -259,6 +267,54 @@ class Angular {
         $new = "<?php if (!({$match['value']})) { ?>";
         $new .= str_replace($match['exp'], '', $match['html']);
         $new .= '<?php } ?>';
+        return str_replace($match['html'], $new, $content);
+    }
+
+    /**
+     * 解析before属性
+     * @param string $content 源模板内容
+     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
+     * @return string 解析后的模板内容
+     */
+    private function parseBefore($content, $match) {
+        $new = "<?php {$match['value']}; ?>";
+        $new .= str_replace($match['exp'], '', $match['html']);
+        return str_replace($match['html'], $new, $content);
+    }
+
+    /**
+     * 解析after属性
+     * @param string $content 源模板内容
+     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
+     * @return string 解析后的模板内容
+     */
+    private function parseAfter($content, $match) {
+        $new = str_replace($match['exp'], '', $match['html']);
+        $new .= "<?php {$match['value']}; ?>";
+        return str_replace($match['html'], $new, $content);
+    }
+
+    /**
+     * 解析function属性
+     * @param string $content 源模板内容
+     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
+     * @return string 解析后的模板内容
+     */
+    private function parseFunction($content, $match) {
+        $new = "<?php function {$match['value']} { ?>";
+        $new .= str_replace($match['exp'], '', $match['html']);
+        $new .= '<?php } ?>';
+        return str_replace($match['html'], $new, $content);
+    }
+
+    /**
+     * 解析调用function属性
+     * @param string $content 源模板内容
+     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
+     * @return string 解析后的模板内容
+     */
+    private function parseCall($content, $match) {
+        $new = "<?php {$match['value']}; ?>";
         return str_replace($match['html'], $new, $content);
     }
 
