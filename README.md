@@ -18,6 +18,9 @@
 11. php-before  
 12. php-function  
 13. php-call  
+14. php-switch  
+15. php-case  
+16. php-default  
 
 **变量输出**  
 {$var}  
