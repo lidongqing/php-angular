@@ -107,6 +107,7 @@ class Angular {
      * @return string 解析后的模板代码
      */
     public function parse($content) {
+        $num = 1000;
         while (true) {
             $sub = $this->match($content);
             if ($sub) {
@@ -119,6 +120,10 @@ class Angular {
                 }
             } else {
                 break;
+            }
+            if ($num-- <= 0) {
+                print_r($sub);
+                die('解析出错, 超过了最大属性数');
             }
         }
         $content = $this->parseValue($content);
@@ -202,6 +207,47 @@ class Angular {
         $new = "<?php if ({$match['value']}) { ?>";
         $new .= str_replace($match['exp'], '', $match['html']);
         $new .= '<?php } ?>';
+        return str_replace($match['html'], $new, $content);
+    }
+
+    /**
+     * 解析switch属性
+     * @param string $content 源模板内容
+     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
+     * @return string 解析后的模板内容
+     */
+    private function parseSwitch($content, $match) {
+        $start = "<?php switch ({$match['value']}) { ?>";
+        $end = "<?php } ?>";
+        $new = preg_replace('/^[^>]*>/', $start, $match['html']);
+        $new = preg_replace('/<[^<]*$/', $end, $new);
+        $new = str_replace($match['html'], $new, $content);
+        return $new;
+    }
+
+    /**
+     * 解析case属性
+     * @param string $content 源模板内容
+     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
+     * @return string 解析后的模板内容
+     */
+    private function parseCase($content, $match) {
+        $new = "<?php case '{$match['value']}': ?>";
+        $new .= str_replace($match['exp'], '', $match['html']);
+        $new .= '<?php break; ?>';
+        return str_replace($match['html'], $new, $content);
+    }
+
+    /**
+     * 解析defalut属性
+     * @param string $content 源模板内容
+     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
+     * @return string 解析后的模板内容
+     */
+    private function parseDefault($content, $match) {
+        $new = "<?php default: ?>";
+        $new .= str_replace($match['exp'], '', $match['html']);
+        $new .= '<?php break; ?>';
         return str_replace($match['html'], $new, $content);
     }
 
@@ -334,6 +380,10 @@ class Angular {
 
         $content = preg_replace('/\{(\$.*?)\}/', '<?php echo \1; ?>', $content);
         $content = preg_replace('/\{\:(.*?)\}/', '<?php echo \1; ?>', $content);
+        
+        // 合并php代码结束符号和开始符号
+        $content = preg_replace('/\?>[\s\n]*<\?php/', '', $content);
+        
         return $content;
     }
 
