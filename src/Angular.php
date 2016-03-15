@@ -16,7 +16,6 @@ class Angular {
     private $config   = array(
         'tpl_path'   => './view/',
         'tpl_suffix' => '.html',
-        'cache_path' => './cache/',
         'attr'       => 'php-',
     );
     private $tpl_var  = array();
