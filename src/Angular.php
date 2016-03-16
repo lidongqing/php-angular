@@ -231,7 +231,7 @@ class Angular {
      * @return string 解析后的模板内容
      */
     private function parseCase($content, $match) {
-        $new = "<?php case '{$match['value']}': ?>";
+        $new = "<?php case {$match['value']}: ?>";
         $new .= str_replace($match['exp'], '', $match['html']);
         $new .= '<?php break; ?>';
         return str_replace($match['html'], $new, $content);
