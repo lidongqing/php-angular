@@ -75,7 +75,7 @@ class Angular {
     /**
      * 编译模板内容
      * @param string $tpl_content 模板内容
-     * @return string 编译后端php混编代码
+     * @return string 编译后的php混编代码
      */
     public function compiler($tpl_file, $tpl_var = array()) {
         if ($tpl_var) {
