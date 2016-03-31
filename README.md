@@ -21,8 +21,8 @@
 14. php-switch  
 15. php-case  
 16. php-default  
-17. php-extends
-18. php-block
+17. php-extends  
+18. php-block  
 
 **变量输出**  
 {$var}  
