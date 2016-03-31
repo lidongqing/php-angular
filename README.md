@@ -55,9 +55,7 @@ require '../src/Angular.php';
 $config = array(
     'tpl_path'   => './view/',
     'tpl_suffix' => '.html',
-    'cache_path' => './cache/',
     'attr'       => 'php-',
-    'debug'      => true,
 );
 
 // 实例化
@@ -160,7 +158,7 @@ $view->display('index');
 
 ~~~
 
-## 解析结果 /test/cache/6a992d5529f459a44fee58c733255e86.php
+## 解析结果
 
 ~~~
 <!DOCTYPE html>
