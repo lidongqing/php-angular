@@ -21,6 +21,8 @@
 14. php-switch  
 15. php-case  
 16. php-default  
+17. php-extends
+18. php-block
 
 **变量输出**  
 {$var}  
@@ -28,7 +30,6 @@
 {$array['name']}  
 {:func()}  
 {$var ? '' : ''}  
-{$var|func}  
 
 ## 结合框架使用
 
@@ -39,6 +40,9 @@
 此模板引擎针对能够使用angularjs的php开发者编写, 主要特点是 不需要额外的标签定义, 全部使用属性定义, 写好模板文件在IDE中不会出现警告和错误, 格式化代码的时候很整洁, 因为套完的模板文件还是规范的html
 
 注: 模板属性有前后顺序要求, 所以要注意属性的顺序, 具体可参考下面的解析结果
+
+## 文档
+看云文档托管平台: http://www.kancloud.cn/shuai/php-angular
 
 ## 直接使用方法 /test/index.php
 
