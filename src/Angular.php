@@ -7,7 +7,6 @@
 // +----------------------------------------------------------------------
 // | Author: 翟帅干 <zhaishuaigan@qq.com> <http://zhaishuaigan.cn>
 // +----------------------------------------------------------------------
-
 /**
  * Angular模板引擎
  */
@@ -17,6 +16,7 @@ class Angular {
         'tpl_path'   => './view/',
         'tpl_suffix' => '.html',
         'attr'       => 'php-',
+        'max_tag'    => 10000,
     );
     private $tpl_var   = array();
     private $tpl_file  = '';
@@ -49,7 +49,6 @@ class Angular {
      */
     public function fetch($tpl_file, $tpl_var = array()) {
         $content = $this->compiler($tpl_file, $tpl_var);
-
         // 模板阵列变量分解成为独立变量
         if (!is_null($this->tpl_var)) {
             extract($this->tpl_var, EXTR_OVERWRITE);
@@ -81,14 +80,12 @@ class Angular {
         if ($tpl_var) {
             $this->tpl_var = array_merge($this->tpl_var, $tpl_var);
         }
-
         if (strpos($tpl_file, $this->config['tpl_suffix']) > 0) {
             $this->tpl_file = $tpl_file;
         } else if (is_file($this->config['tpl_path'] . $tpl_file . $this->config['tpl_suffix'])) {
             $this->tpl_file = $this->config['tpl_path'] . $tpl_file . $this->config['tpl_suffix'];
             $tpl_file       = $this->tpl_file;
         }
-
         if (is_file($tpl_file)) {
             $tpl_content = file_get_contents($tpl_file);
         } else {
@@ -97,7 +94,7 @@ class Angular {
         //模板解析
         $tpl_content = $this->parse($tpl_content);
         // 优化生成的php代码
-        $tpl_content = str_replace('?><?php', '', $tpl_content);
+        /* $tpl_content = str_replace('?><?php', '', $tpl_content); */
         return $tpl_content;
     }
 
@@ -107,7 +104,7 @@ class Angular {
      * @return string 解析后的模板代码
      */
     public function parse($content) {
-        $num = 1000;
+        $num = $this->config['max_tag'];
         while (true) {
             $sub = $this->match($content);
             if ($sub) {
@@ -115,15 +112,14 @@ class Angular {
                 if (method_exists($this, $method)) {
                     $content = $this->$method($content, $sub);
                 } else {
-                    die("模板属性" . $this->config['attr'] . $sub['attr'] . '没有对应的解析规则');
+                    throw new Exception("模板属性" . $this->config['attr'] . $sub['attr'] . '没有对应的解析规则');
                     break;
                 }
             } else {
                 break;
             }
             if ($num-- <= 0) {
-                print_r($sub);
-                die('解析出错, 超过了最大属性数');
+                throw new Exception('解析出错, 超过了最大属性数');
             }
         }
         $content = $this->parseValue($content);
@@ -379,13 +375,10 @@ class Angular {
         $content = preg_replace('/\{(\$.*?)\?\s*\?(.*)\}/', '{\1?\1:\2}', $content);
         // {$var?='xxx'} to {$var?'xxx':''}
         $content = preg_replace('/\{(\$.*?)\?\=(.*)\}/', '{\1?\2:""}', $content);
-
         $content = preg_replace('/\{(\$.*?)\}/', '<?php echo \1; ?>', $content);
         $content = preg_replace('/\{\:(.*?)\}/', '<?php echo \1; ?>', $content);
-
         // 合并php代码结束符号和开始符号
         $content = preg_replace('/\?>[\s\n]*<\?php/', '', $content);
-
         return $content;
     }
 
