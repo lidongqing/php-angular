@@ -3,7 +3,7 @@
 // +----------------------------------------------------------------------
 // | OneThink [ WE CAN DO IT JUST THINK IT ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2014 http://www.onethink.cn All rights reserved.
+// | Copyright (c) 2006-2016 http://www.thinkphp.cn All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: 翟帅干 <zhaishuaigan@qq.com> <http://zhaishuaigan.cn>
 // +----------------------------------------------------------------------
