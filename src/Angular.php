@@ -13,13 +13,14 @@
  */
 class Angular {
 
-    private $config   = array(
+    private $config    = array(
         'tpl_path'   => './view/',
         'tpl_suffix' => '.html',
         'attr'       => 'php-',
     );
-    private $tpl_var  = array();
-    private $tpl_file = '';
+    private $tpl_var   = array();
+    private $tpl_file  = '';
+    private $tpl_block = '';
 
     /**
      * 架构函数
@@ -160,6 +161,11 @@ class Angular {
         return str_replace($match['html'], $parse_str, $content);
     }
 
+    /**
+     * 处理include的模板路径
+     * @param string $tpl 模板路径
+     * @return string 模板的真实地址
+     */
     private function parseTemplateFile($tpl) {
         if (strpos($tpl, $this->config['tpl_suffix'])) {
             return $tpl;
@@ -174,8 +180,6 @@ class Angular {
 
     /**
      * 解析init属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseInit($content, $match) {
@@ -186,8 +190,6 @@ class Angular {
 
     /**
      * 解析init属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseExec($content, $match) {
@@ -198,8 +200,6 @@ class Angular {
 
     /**
      * 解析if属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseIf($content, $match) {
@@ -211,23 +211,19 @@ class Angular {
 
     /**
      * 解析switch属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseSwitch($content, $match) {
         $start = "<?php switch ({$match['value']}) { ?>";
-        $end = "<?php } ?>";
-        $new = preg_replace('/^[^>]*>/', $start, $match['html']);
-        $new = preg_replace('/<[^<]*$/', $end, $new);
-        $new = str_replace($match['html'], $new, $content);
+        $end   = "<?php } ?>";
+        $new   = preg_replace('/^[^>]*>/', $start, $match['html']);
+        $new   = preg_replace('/<[^<]*$/', $end, $new);
+        $new   = str_replace($match['html'], $new, $content);
         return $new;
     }
 
     /**
      * 解析case属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseCase($content, $match) {
@@ -239,8 +235,6 @@ class Angular {
 
     /**
      * 解析defalut属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseDefault($content, $match) {
@@ -252,8 +246,6 @@ class Angular {
 
     /**
      * 解析repeat属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseRepeat($content, $match) {
@@ -265,8 +257,6 @@ class Angular {
 
     /**
      * 解析foreach属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseForeach($content, $match) {
@@ -278,8 +268,6 @@ class Angular {
 
     /**
      * 解析for属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseFor($content, $match) {
@@ -291,8 +279,6 @@ class Angular {
 
     /**
      * 解析show属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseShow($content, $match) {
@@ -304,8 +290,6 @@ class Angular {
 
     /**
      * 解析hide属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseHide($content, $match) {
@@ -317,8 +301,6 @@ class Angular {
 
     /**
      * 解析before属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseBefore($content, $match) {
@@ -329,8 +311,6 @@ class Angular {
 
     /**
      * 解析after属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseAfter($content, $match) {
@@ -341,8 +321,6 @@ class Angular {
 
     /**
      * 解析function属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseFunction($content, $match) {
@@ -354,8 +332,6 @@ class Angular {
 
     /**
      * 解析调用function属性
-     * @param string $content 源模板内容
-     * @param array $match 一个正则匹配结果集, 包含 html, value, attr
      * @return string 解析后的模板内容
      */
     private function parseCall($content, $match) {
@@ -364,7 +340,34 @@ class Angular {
     }
 
     /**
-     * 解析普通变量和函数{$title}{:function_name}
+     * 解析继承, 暂时不支持多级继承
+     * @return string
+     */
+    private function parseExtends($content, $match) {
+        $this->tpl_block = $content;
+        $content         = 'extends';
+        $match['html']   = $content;
+        $content         = $this->parseInclude($content, $match);
+        return $content;
+    }
+
+    /**
+     * 解析继承的代码块
+     * @return string
+     */
+    private function parseBlock($content, $match) {
+        $block = $this->match($this->tpl_block, 'block', $match['value']);
+        if ($block) {
+            $new = str_replace($block['exp'], '', $block['html']);
+            return str_replace($match['html'], $new, $content);
+        } else {
+            $new = str_replace($match['exp'], '', $match['html']);
+            return str_replace($match['html'], $new, $content);
+        }
+    }
+
+    /**
+     * 解析普通变量和函数{$title}{:function_name($var)}
      * @param string $content 源模板内容
      * @return string 解析后的模板内容
      */
@@ -379,27 +382,32 @@ class Angular {
 
         $content = preg_replace('/\{(\$.*?)\}/', '<?php echo \1; ?>', $content);
         $content = preg_replace('/\{\:(.*?)\}/', '<?php echo \1; ?>', $content);
-        
+
         // 合并php代码结束符号和开始符号
         $content = preg_replace('/\?>[\s\n]*<\?php/', '', $content);
-        
+
         return $content;
     }
 
     /**
      * 获取第一个表达式
      * @param string $content 要解析的模板内容
+     * @param string $attr 属性名
+     * @param string $val 属性值
      * @return array 一个匹配的标签数组
      */
-    private function match($content) {
-        $reg   = '#<(?<tag>[\w]+)[^>]*?\s(?<exp>' . preg_quote($this->config['attr']) . '(?<attr>[\w]+)=([\'"])(?<value>[^\4]*?)\4)[^>]*>#s';
+    private function match($content, $attr = '[\w]+', $val = '[^\4]*?') {
+        $reg   = '#<(?<tag>[\w]+)[^>]*?\s(?<exp>'
+                . preg_quote($this->config['attr'])
+                . '(?<attr>' . $attr
+                . ')=([\'"])(?<value>' . $val . ')\4)[^>]*>#s';
         $match = null;
         if (!preg_match($reg, $content, $match)) {
             return null;
         }
         $sub = $match[0];
         $tag = $match['tag'];
-        /* 如果是但标签, 就直接返回 */
+        /* 如果是单标签, 就直接返回 */
         if (substr($sub, -2) == '/>') {
             $match['html'] = $match[0];
             return $match;
