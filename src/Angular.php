@@ -336,11 +336,11 @@ class Angular {
     }
 
     /**
-     * 解析继承, 暂时不支持多级继承
+     * 解析模板继承
      * @return string
      */
     private function parseExtends($content, $match) {
-        $this->tpl_block = $content;
+        $this->tpl_block .= $content;
         $content         = 'extends';
         $match['html']   = $content;
         $content         = $this->parseInclude($content, $match);
