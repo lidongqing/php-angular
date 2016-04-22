@@ -13,25 +13,25 @@
 class Angular {
 
     private $config    = array(
-        'tpl_path'   => './view/',
-        'tpl_suffix' => '.html',
-        'attr'       => 'php-',
-        'max_tag'    => 10000,
+        'debug'            => false, // 是否开启调试
+        'tpl_path'         => './view/', // 模板根目录
+        'tpl_suffix'       => '.html', // 模板后缀
+        'tpl_cache_path'   => './cache/', // 模板缓存目录
+        'tpl_cache_suffix' => '.php', // 模板后缀
+        'attr'             => 'php-', // 标签前缀
+        'max_tag'          => 10000, // 标签的最大解析次数
     );
-    private $tpl_var   = array();
-    private $tpl_file  = '';
-    private $tpl_block = '';
+    private $tpl_var   = array(); // 模板变量列表
+    private $tpl_file  = '';      // 当前要解析的模板文件
+    private $tpl_block = '';      // 模板继承缓存的block
 
-    /**
-     * 架构函数
-     */
     public function __construct($config) {
         $this->config = array_merge($this->config, $config);
     }
 
     /**
      * 分配模板变量
-     * @param string $name 模板变量
+     * @param string|array $name 模板变量
      * @param mixed $value 值
      */
     public function assign($name, $value = null) {
@@ -43,12 +43,51 @@ class Angular {
     }
 
     /**
+     * 获取模板文件内容
+     * @param string $tpl_file
+     * @return string
+     */
+    public function getTplContent($tpl_file) {
+        // 如果长度超过255, 直接当模板内容返回
+        if (strlen($tpl_file) > 255) {
+            return $tpl_file;
+        }
+        if (strpos($tpl_file, $this->config['tpl_suffix']) > 0) {
+            $this->tpl_file = $tpl_file;
+            return file_get_contents($tpl_file);
+        }
+
+        // 模板文件真实路径
+        $tpl_file_path = $this->config['tpl_path'] . $tpl_file . $this->config['tpl_suffix'];
+        if (is_file($tpl_file_path)) {
+            $this->tpl_file = $tpl_file_path;
+            return file_get_contents($tpl_file_path);
+        }
+
+        // 如果不是文件, 就返回原始内容
+        return $tpl_file;
+    }
+
+    /**
      * 编译模板
      * @param string $tpl_file 模板文件
      * @param array $tpl_var 模板变量
      */
     public function fetch($tpl_file, $tpl_var = array()) {
-        $content = $this->compiler($tpl_file, $tpl_var);
+        // 缓存文件名文件路径连接上文件的修改时间, 然后计算md5值作为缓存文件名.
+        $cache_file = $this->config['tpl_cache_path'] . md5($tpl_file) . $this->config['tpl_cache_suffix'];
+        if (!file_exists($cache_file) || $this->config['debug']) {
+            // 调试模式或换成不存在时, 重新生成编译缓存
+            $cache_dir = dirname($cache_file);
+            if (!is_dir($cache_dir)) {
+                mkdir($cache_dir, 0777);
+            }
+
+            // 编译生成缓存
+            $content = $this->compiler($tpl_file, $tpl_var);
+            file_put_contents($cache_file, $content);
+        }
+
         // 模板阵列变量分解成为独立变量
         if (!is_null($this->tpl_var)) {
             extract($this->tpl_var, EXTR_OVERWRITE);
@@ -56,7 +95,7 @@ class Angular {
         // 页面缓存
         ob_start();
         ob_implicit_flush(0);
-        eval('?>' . $content);
+        require $cache_file;
         // 获取并清空缓存
         $content = ob_get_clean();
         return $content;
@@ -73,29 +112,19 @@ class Angular {
 
     /**
      * 编译模板内容
-     * @param string $tpl_content 模板内容
+     * @param string $tpl_file 模板内容
      * @return string 编译后的php混编代码
      */
-    public function compiler($tpl_file, $tpl_var = array()) {
+    public function compiler($tpl_file) {
         if ($tpl_var) {
             $this->tpl_var = array_merge($this->tpl_var, $tpl_var);
         }
-        if (strpos($tpl_file, $this->config['tpl_suffix']) > 0) {
-            $this->tpl_file = $tpl_file;
-        } else if (is_file($this->config['tpl_path'] . $tpl_file . $this->config['tpl_suffix'])) {
-            $this->tpl_file = $this->config['tpl_path'] . $tpl_file . $this->config['tpl_suffix'];
-            $tpl_file       = $this->tpl_file;
-        }
-        if (is_file($tpl_file)) {
-            $tpl_content = file_get_contents($tpl_file);
-        } else {
-            $tpl_content = $tpl_file;
-        }
+        $content = $this->getTplContent($tpl_file);
         //模板解析
-        $tpl_content = $this->parse($tpl_content);
+        $result = $this->parse($content);
         // 优化生成的php代码
-        /* $tpl_content = str_replace('?><?php', '', $tpl_content); */
-        return $tpl_content;
+        /* $result = str_replace('?><?php', '', $result); */
+        return $result;
     }
 
     /**
@@ -341,9 +370,9 @@ class Angular {
      */
     private function parseExtends($content, $match) {
         $this->tpl_block .= $content;
-        $content         = 'extends';
-        $match['html']   = $content;
-        $content         = $this->parseInclude($content, $match);
+        $content       = 'extends';
+        $match['html'] = $content;
+        $content       = $this->parseInclude($content, $match);
         return $content;
     }
 

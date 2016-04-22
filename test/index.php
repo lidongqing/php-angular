@@ -1,0 +1,93 @@
+<?php
+
+require '../src/Angular.php';
+
+$start_time = microtime(true);
+
+// 配置
+$config = [
+    'debug'            => true, // 是否开启调试, 开启调试会实时生成缓存, 如果关闭调试, 只有要显示的模板被修改过, 才会重新生成缓存, 被include或者extends的模板修改不会重新生成缓存
+    'tpl_path'         => './view/', // 模板根目录
+    'tpl_suffix'       => '.html', // 模板后缀
+    'tpl_cache_path'   => './cache/', // 模板缓存目录
+    'tpl_cache_suffix' => '.php', // 模板后缀
+    'attr'             => 'php-', // 标签前缀
+    'max_tag'          => 10000, // 标签的最大解析次数
+];
+
+// 实例化
+$view = new Angular($config);
+
+// 导航
+$navs = [
+    ['title' => '首页', 'url' => '#/'],
+    ['title' => '博客', 'url' => '#/blog'],
+    ['title' => '图片', 'url' => '#/pic'],
+    ['title' => '留言', 'url' => '#/msg'],
+];
+
+// 模拟用户列表
+$data = [
+    'title' => 'Hello PHP Angular',
+    'list'  => [
+        ['name' => 'name_1', 'email' => 'email_1@qq.com'],
+        ['name' => 'name_2', 'email' => 'email_2@qq.com'],
+        ['name' => 'name_3', 'email' => 'email_3@qq.com'],
+        ['name' => 'name_4', 'email' => 'email_4@qq.com'],
+        ['name' => 'name_5', 'email' => 'email_5@qq.com'],
+    ],
+];
+
+// 树状结构
+$menus = [
+    [
+        'title' => '菜单1',
+        'sub'   => [
+            ['title' => '菜单1.1'],
+            ['title' => '菜单1.2'],
+            ['title' => '菜单1.3'],
+            ['title' => '菜单1.4'],
+        ]
+    ],
+    [
+        'title' => '菜单2',
+        'sub'   => [
+            ['title' => '菜单2.1'],
+            ['title' => '菜单2.2'],
+            ['title' => '菜单2.3'],
+            ['title' => '菜单2.4'],
+        ]
+    ],
+    [
+        'title' => '菜单3',
+        'sub'   => [
+            [
+                'title' => '菜单3.1',
+                'sub'   => [
+                    ['title' => '菜单3.1.1'],
+                    ['title' => '菜单3.1.2'],
+                    [
+                        'title' => '菜单3.1.3',
+                        'sub'   => [
+                            ['title' => '菜单3.1.3.1'],
+                            ['title' => '菜单3.1.3.2'],
+                        ]
+                    ],
+                ]
+            ],
+            ['title' => '菜单3.2'],
+            ['title' => '菜单3.3'],
+            ['title' => '菜单3.4'],
+        ]
+    ],
+];
+
+// 向模板引擎设置数据
+$view->assign($data);
+$view->assign('start_time', $start_time);
+$view->assign('menus', $menus);
+$view->assign('navs', $navs);
+
+
+// 输出解析结果
+$view->display('index');
