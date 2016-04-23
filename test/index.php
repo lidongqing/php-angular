@@ -1,5 +1,8 @@
 <?php
 
+ini_set("display_errors", "On");
+error_reporting(E_ALL | E_STRICT);
+
 require '../src/Angular.php';
 
 $start_time = microtime(true);
@@ -30,11 +33,11 @@ $navs = [
 $data = [
     'title' => 'Hello PHP Angular',
     'list'  => [
-        ['name' => 'name_1', 'email' => 'email_1@qq.com'],
-        ['name' => 'name_2', 'email' => 'email_2@qq.com'],
-        ['name' => 'name_3', 'email' => 'email_3@qq.com'],
-        ['name' => 'name_4', 'email' => 'email_4@qq.com'],
-        ['name' => 'name_5', 'email' => 'email_5@qq.com'],
+        ['id' => 1, 'name' => 'user_1', 'email' => 'email_1@qq.com', 'status' => 1],
+        ['id' => 2, 'name' => 'user_2', 'email' => 'email_2@qq.com', 'status' => 0],
+        ['id' => 3, 'name' => 'user_3', 'email' => 'email_3@qq.com', 'status' => -1],
+        ['id' => 4, 'name' => 'user_4', 'email' => 'email_4@qq.com', 'status' => 1],
+        ['id' => 5, 'name' => 'user_5', 'email' => 'email_5@qq.com', 'status' => 1],
     ],
 ];
 
@@ -91,3 +94,10 @@ $view->assign('navs', $navs);
 
 // 输出解析结果
 $view->display('index');
+
+// 返回输出结果
+// $html = $view->fetch('index');
+// echo $html;
+
+// 获取混编代码
+// $php_code = $view->compiler('index');

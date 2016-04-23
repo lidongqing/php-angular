@@ -115,15 +115,13 @@ class Angular {
      * @param string $tpl_file 模板内容
      * @return string 编译后的php混编代码
      */
-    public function compiler($tpl_file) {
+    public function compiler($tpl_file, $tpl_var = array()) {
         if ($tpl_var) {
             $this->tpl_var = array_merge($this->tpl_var, $tpl_var);
         }
         $content = $this->getTplContent($tpl_file);
         //模板解析
-        $result = $this->parse($content);
-        // 优化生成的php代码
-        /* $result = str_replace('?><?php', '', $result); */
+        $result  = $this->parse($content);
         return $result;
     }
 
@@ -214,7 +212,7 @@ class Angular {
     }
 
     /**
-     * 解析init属性
+     * 解析exec属性
      * @return string 解析后的模板内容
      */
     private function parseExec($content, $match) {
@@ -229,6 +227,28 @@ class Angular {
      */
     private function parseIf($content, $match) {
         $new = "<?php if ({$match['value']}) { ?>";
+        $new .= str_replace($match['exp'], '', $match['html']);
+        $new .= '<?php } ?>';
+        return str_replace($match['html'], $new, $content);
+    }
+
+    /**
+     * 解析elseif属性
+     * @return string 解析后的模板内容
+     */
+    private function parseElseif($content, $match) {
+        $new = "<?php elseif ({$match['value']}) { ?>";
+        $new .= str_replace($match['exp'], '', $match['html']);
+        $new .= '<?php } ?>';
+        return str_replace($match['html'], $new, $content);
+    }
+
+    /**
+     * 解析else属性
+     * @return string 解析后的模板内容
+     */
+    private function parseElse($content, $match) {
+        $new = "<?php else { ?>";
         $new .= str_replace($match['exp'], '', $match['html']);
         $new .= '<?php } ?>';
         return str_replace($match['html'], $new, $content);
