@@ -5,7 +5,7 @@
 
 ## 目前实现了以下几种标签和用法
 **标签**  
-1. php-if  php-elseif  php-else
+1. php-if  php-elseif  php-else  
 2. php-for  
 3. php-foreach  
 4. php-repeat  
@@ -28,8 +28,10 @@
 {$var}  
 {$array.name}  
 {$array['name']}  
-{:func()}  
 {$var ? '' : ''}  
+
+**函数调用**  
+{:func()}  
 
 ## 结合框架使用
 
@@ -44,19 +46,24 @@
 ## 文档
 看云文档托管平台: http://www.kancloud.cn/shuai/php-angular
 
+## 示例代码
+参考/test目录 
+
 ## 直接使用方法 /test/index.php
 
 ~~~
 <?php
 
-require '../src/Angular.php';
-
 // 配置
-$config = array(
-    'tpl_path'   => './view/',
-    'tpl_suffix' => '.html',
-    'attr'       => 'php-',
-);
+$config = [
+    'debug'            => true, // 是否开启调试
+    'tpl_path'         => './view/', // 模板根目录
+    'tpl_suffix'       => '.html', // 模板后缀
+    'tpl_cache_path'   => './cache/', // 模板缓存目录
+    'tpl_cache_suffix' => '.php', // 模板后缀
+    'attr'             => 'php-', // 标签前缀
+    'max_tag'          => 10000, // 标签的最大解析次数
+];
 
 // 实例化
 $view = new Angular($config);

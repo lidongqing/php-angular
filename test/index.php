@@ -9,7 +9,7 @@ $start_time = microtime(true);
 
 // 配置
 $config = [
-    'debug'            => true, // 是否开启调试, 开启调试会实时生成缓存, 如果关闭调试, 只有要显示的模板被修改过, 才会重新生成缓存, 被include或者extends的模板修改不会重新生成缓存
+    'debug'            => true, // 是否开启调试, 开启调试会实时生成缓存
     'tpl_path'         => './view/', // 模板根目录
     'tpl_suffix'       => '.html', // 模板后缀
     'tpl_cache_path'   => './cache/', // 模板缓存目录
