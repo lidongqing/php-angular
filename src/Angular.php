@@ -456,7 +456,7 @@ class Angular {
         }
         /* 查找完整标签 */
         $start_tag_len   = strlen($tag) + 1; // <div
-        $end_tag_len     = strlen($tag) + 3;   // </div>
+        $end_tag_len     = strlen($tag) + 3; // </div>
         $start_tag_count = 0;
         $content_len     = strlen($content);
         $pos             = strpos($content, $sub);
