@@ -52,12 +52,19 @@ class Angular {
         if (strlen($tpl_file) > 255) {
             return $tpl_file;
         }
+        // 如果文件存在, 直接返回文件内容
+        if (file_exists($tpl_file)) {
+            $this->tpl_file = $tpl_file;
+            return file_get_contents($tpl_file);
+        }
+        
+        // 如果有模板后缀, 直接当绝对地址
         if (strpos($tpl_file, $this->config['tpl_suffix']) > 0) {
             $this->tpl_file = $tpl_file;
             return file_get_contents($tpl_file);
         }
 
-        // 模板文件真实路径
+        // 根据模板目录定位文件
         $tpl_file_path = $this->config['tpl_path'] . $tpl_file . $this->config['tpl_suffix'];
         if (is_file($tpl_file_path)) {
             $this->tpl_file = $tpl_file_path;
