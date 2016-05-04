@@ -424,15 +424,21 @@ class Angular {
      * @return string 解析后的模板内容
      */
     private function parseValue($content) {
-        // {$vo.name} to {$vo["name"]}
+        // {$vo.name} 转为 {$vo["name"]}
         $content = preg_replace('/\{(\$[\w\[\"\]]*)\.(\w*)(.*)\}/', '{\1["\2"]\3}', $content);
         $content = preg_replace('/\{(\$[\w\[\"\]]*)\.(\w*)(.*)\}/', '{\1["\2"]\3}', $content);
-        // {$var??'xxx'} to {$var?$var:'xxx'}
+        
+        // {$var ?? 'xxx'} 转为 {$var ? $var : 'xxx'}
         $content = preg_replace('/\{(\$.*?)\?\s*\?(.*)\}/', '{\1?\1:\2}', $content);
-        // {$var?='xxx'} to {$var?'xxx':''}
+        
+        // {$var ?= 'xxx'} to {$var ? 'xxx':''}
         $content = preg_replace('/\{(\$.*?)\?\=(.*)\}/', '{\1?\2:""}', $content);
         $content = preg_replace('/\{(\$.*?)\}/', '<?php echo \1; ?>', $content);
         $content = preg_replace('/\{\:(.*?)\}/', '<?php echo \1; ?>', $content);
+        
+        // 过滤<php></php>标签, 保留标签之间的内容
+        $content = preg_replace('/\<\/?php[^>]*>/', '', $content);
+        
         // 合并php代码结束符号和开始符号
         $content = preg_replace('/\?>[\s\n]*<\?php/', '', $content);
         return $content;
