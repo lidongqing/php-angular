@@ -22,8 +22,18 @@ $config = [
 // 自定义扩展
 
 Angular::extend('diy', function ($content, $param) {
-    var_dump($content);
-    var_dump($param);
+    $return = '<pre>';
+    
+    $return .= '参数:';
+    $return .= htmlspecialchars(print_r($param, true));
+    
+    $return .= '解析后:';
+    $sub_content = str_replace($param['exp'], '', $param['html']);
+    $return .= htmlspecialchars($sub_content);
+    
+    $return .= '</pre>';
+    return str_replace($param['html'], $return, $content);
+    
 });
 
 // 实例化

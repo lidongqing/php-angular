@@ -122,7 +122,25 @@
 
             </div>
 
-
+            <pre>参数:Array
+(
+    [0] =&gt; &lt;div php-diy=&quot;attr value&quot;&gt;
+    [tag] =&gt; div
+    [1] =&gt; div
+    [exp] =&gt; php-diy=&quot;attr value&quot;
+    [2] =&gt; php-diy=&quot;attr value&quot;
+    [attr] =&gt; diy
+    [3] =&gt; diy
+    [4] =&gt; &quot;
+    [value] =&gt; attr value
+    [5] =&gt; attr value
+    [html] =&gt; &lt;div php-diy=&quot;attr value&quot;&gt;
+                &lt;p&gt;hello&lt;/p&gt;
+            &lt;/div&gt;
+)
+解析后:&lt;div &gt;
+                &lt;p&gt;hello&lt;/p&gt;
+            &lt;/div&gt;</pre>
 
 
 
