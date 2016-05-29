@@ -93,6 +93,12 @@ $menus = [
     ],
 ];
 
+$view->assign('pagecount', 100);
+$view->assign('p', isset($_GET['p']) ? $_GET['p'] : 1);
+$view->assign('page', function ($p) {
+    return '/?p=' . $p;
+});
+
 // 向模板引擎设置数据
 $view->assign($data);
 $view->assign('start_time', $start_time);

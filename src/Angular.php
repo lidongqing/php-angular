@@ -53,12 +53,19 @@ class Angular {
         if (strlen($tpl_file) > 255) {
             return $tpl_file;
         }
+        // 如果文件存在, 直接返回文件内容
+        if (file_exists($tpl_file)) {
+            $this->tpl_file = $tpl_file;
+            return file_get_contents($tpl_file);
+        }
+        
+        // 如果有模板后缀, 直接当绝对地址
         if (strpos($tpl_file, $this->config['tpl_suffix']) > 0) {
             $this->tpl_file = $tpl_file;
             return file_get_contents($tpl_file);
         }
 
-        // 模板文件真实路径
+        // 根据模板目录定位文件
         $tpl_file_path = $this->config['tpl_path'] . $tpl_file . $this->config['tpl_suffix'];
         if (is_file($tpl_file_path)) {
             $this->tpl_file = $tpl_file_path;
@@ -424,15 +431,21 @@ class Angular {
      * @return string 解析后的模板内容
      */
     private function parseValue($content) {
-        // {$vo.name} to {$vo["name"]}
+        // {$vo.name} 转为 {$vo["name"]}
         $content = preg_replace('/\{(\$[\w\[\"\]]*)\.(\w*)(.*)\}/', '{\1["\2"]\3}', $content);
         $content = preg_replace('/\{(\$[\w\[\"\]]*)\.(\w*)(.*)\}/', '{\1["\2"]\3}', $content);
-        // {$var??'xxx'} to {$var?$var:'xxx'}
+        
+        // {$var ?? 'xxx'} 转为 {$var ? $var : 'xxx'}
         $content = preg_replace('/\{(\$.*?)\?\s*\?(.*)\}/', '{\1?\1:\2}', $content);
-        // {$var?='xxx'} to {$var?'xxx':''}
+        
+        // {$var ?= 'xxx'} to {$var ? 'xxx':''}
         $content = preg_replace('/\{(\$.*?)\?\=(.*)\}/', '{\1?\2:""}', $content);
         $content = preg_replace('/\{(\$.*?)\}/', '<?php echo \1; ?>', $content);
         $content = preg_replace('/\{\:(.*?)\}/', '<?php echo \1; ?>', $content);
+        
+        // 过滤<php></php>标签, 保留标签之间的内容
+        $content = preg_replace('/\<\/?php[^>]*>/', '', $content);
+        
         // 合并php代码结束符号和开始符号
         $content = preg_replace('/\?>[\s\n]*<\?php/', '', $content);
         return $content;
@@ -478,7 +491,7 @@ class Angular {
         }
         /* 查找完整标签 */
         $start_tag_len   = strlen($tag) + 1; // <div
-        $end_tag_len     = strlen($tag) + 3;   // </div>
+        $end_tag_len     = strlen($tag) + 3; // </div>
         $start_tag_count = 0;
         $content_len     = strlen($content);
         $pos             = strpos($content, $sub);
