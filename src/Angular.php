@@ -24,6 +24,7 @@ class Angular {
     private $tpl_var   = array(); // 模板变量列表
     private $tpl_file  = '';      // 当前要解析的模板文件
     private $tpl_block = '';      // 模板继承缓存的block
+    private static $extends   = array();
 
     public function __construct($config) {
         $this->config = array_merge($this->config, $config);
@@ -137,8 +138,14 @@ class Angular {
             if ($sub) {
                 $method = 'parse' . $sub['attr'];
                 if (method_exists($this, $method)) {
+                    // 系统解析规则
                     $content = $this->$method($content, $sub);
+                } elseif (isset(self::$extends[$sub['attr']])) {
+                    // 扩展解析规则
+                    $call = self::$extends[$sub['attr']];
+                    $content = $call($content, $sub);
                 } else {
+                    // 未找到解析规则
                     throw new Exception("模板属性" . $this->config['attr'] . $sub['attr'] . '没有对应的解析规则');
                     break;
                 }
@@ -429,6 +436,21 @@ class Angular {
         // 合并php代码结束符号和开始符号
         $content = preg_replace('/\?>[\s\n]*<\?php/', '', $content);
         return $content;
+    }
+    
+    /**
+     * 扩展解析规则
+     * @param string|array $extends 属性名称
+     * @param mixed $callback 回调方法
+     * @return void
+     */
+    public static function extend($extends, $callback = null)
+    {
+        if (is_array($extends)) {
+            self::$extends = array_merge(self::$extends, $extends);
+        } else {
+            self::$extends[$extends] = $callback;
+        }
     }
 
     /**

@@ -18,6 +18,14 @@ $config = [
     'max_tag'          => 10000, // 标签的最大解析次数
 ];
 
+
+// 自定义扩展
+
+Angular::extend('diy', function ($content, $param) {
+    var_dump($content);
+    var_dump($param);
+});
+
 // 实例化
 $view = new Angular($config);
 
