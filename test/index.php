@@ -1,55 +1,9 @@
 <?php
-
-ini_set("display_errors", "On");
-error_reporting(E_ALL | E_STRICT);
-
-require '../src/Angular.php';
-
-$start_time = microtime(true);
-
-// 配置
-$config = [
-    'debug'            => true, // 是否开启调试, 开启调试会实时生成缓存
-    'tpl_path'         => './view/', // 模板根目录
-    'tpl_suffix'       => '.html', // 模板后缀
-    'tpl_cache_path'   => './cache/', // 模板缓存目录
-    'tpl_cache_suffix' => '.php', // 模板后缀
-    'attr'             => 'php-', // 标签前缀
-    'max_tag'          => 10000, // 标签的最大解析次数
-];
-
-
-// 自定义扩展
-
-Angular::extend('diy', function ($content, $param) {
-    $return = '<pre>';
-    
-    $return .= '参数:';
-    $return .= htmlspecialchars(print_r($param, true));
-    
-    $return .= '解析后:';
-    $sub_content = str_replace($param['exp'], '', $param['html']);
-    $return .= htmlspecialchars($sub_content);
-    
-    $return .= '</pre>';
-    return str_replace($param['html'], $return, $content);
-    
-});
-
-// 实例化
-$view = new Angular($config);
-
-// 导航
-$navs = [
-    ['title' => '首页', 'url' => '#/'],
-    ['title' => '博客', 'url' => '#/blog'],
-    ['title' => '图片', 'url' => '#/pic'],
-    ['title' => '留言', 'url' => '#/msg'],
-];
+require './common.php';
 
 // 模拟用户列表
 $data = [
-    'title' => 'Hello PHP Angular',
+    'title' => '首页',
     'list'  => [
         ['id' => 1, 'name' => 'user_1', 'email' => 'email_1@qq.com', 'status' => 1],
         ['id' => 2, 'name' => 'user_2', 'email' => 'email_2@qq.com', 'status' => 0],
@@ -68,7 +22,7 @@ $menus = [
             ['title' => '菜单1.2'],
             ['title' => '菜单1.3'],
             ['title' => '菜单1.4'],
-        ]
+        ],
     ],
     [
         'title' => '菜单2',
@@ -77,7 +31,7 @@ $menus = [
             ['title' => '菜单2.2'],
             ['title' => '菜单2.3'],
             ['title' => '菜单2.4'],
-        ]
+        ],
     ],
     [
         'title' => '菜单3',
@@ -92,29 +46,27 @@ $menus = [
                         'sub'   => [
                             ['title' => '菜单3.1.3.1'],
                             ['title' => '菜单3.1.3.2'],
-                        ]
+                        ],
                     ],
-                ]
+                ],
             ],
             ['title' => '菜单3.2'],
             ['title' => '菜单3.3'],
             ['title' => '菜单3.4'],
-        ]
+        ],
     ],
 ];
 
 $view->assign('pagecount', 100);
 $view->assign('p', isset($_GET['p']) ? $_GET['p'] : 1);
 $view->assign('page', function ($p) {
-    return '/?p=' . $p;
+    return 'index.php?p=' . $p;
 });
 
 // 向模板引擎设置数据
 $view->assign($data);
 $view->assign('start_time', $start_time);
 $view->assign('menus', $menus);
-$view->assign('navs', $navs);
-
 
 // 输出解析结果
 $view->display('index');
