@@ -25,7 +25,7 @@ class Angular
     private $tpl_var        = array(); // 模板变量列表
     private $tpl_file       = ''; // 当前要解析的模板文件
     private $tpl_block      = ''; // 模板继承缓存的block
-    private static $extends = array();
+    private static $extends = array(); // 扩展解析规则
 
     public function __construct($config)
     {
@@ -429,7 +429,7 @@ class Angular
 
     /**
      * 解析模板继承
-     * @return string
+     * @return string 解析后的模板内容
      */
     private function parseExtends($content, $match)
     {
@@ -492,8 +492,10 @@ class Angular
     public static function extend($extends, $callback = null)
     {
         if (is_array($extends)) {
+            // 如果是数组, 就合并规则
             self::$extends = array_merge(self::$extends, $extends);
         } else {
+            // 添加单个规则
             self::$extends[$extends] = $callback;
         }
     }
@@ -507,8 +509,7 @@ class Angular
      */
     private function match($content, $attr = '[\w]+', $val = '[^\4]*?')
     {
-        $reg = '#<(?<tag>[\w]+)[^>]*?\s(?<exp>'
-        . preg_quote($this->config['attr'])
+        $reg = '#<(?<tag>[\w]+)[^>]*?\s(?<exp>' . preg_quote($this->config['attr'])
             . '(?<attr>' . $attr
             . ')=([\'"])(?<value>' . $val . ')\4)[^>]*>#s';
         $match = null;
