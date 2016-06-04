@@ -19,26 +19,33 @@ $config = [
     'max_tag'          => 10000, // 标签的最大解析次数
 ];
 
-// 自定义扩展
-Angular::extend('diy', function ($content, $param) {
-    $return = '<pre>';
-
-    $return .= '参数:';
+// 自定义扩展, 打印变量的值
+Angular::extend('dump', function ($content, $param, $angular) {
+    $old = $param['html'];
+    $new = '<pre>';
     unset($param[0], $param[1], $param[2], $param[3], $param[4], $param[5]);
-    $return .= htmlspecialchars(print_r($param, true));
-
-    $return .= "\n" . '解析前:' . "\n";
-    $return .= htmlspecialchars($param['html']);
-
-    $return .= "\n" . '解析后:' . "\n";
-    $new         = str_replace('hello', 'hello world', $param['html']);
-    $sub_content = str_replace($param['exp'], '', $new);
-    $return .= htmlspecialchars($sub_content);
-
-    $return .= '</pre>';
-    return str_replace($param['html'], $return, $content);
-
+    $new .= '<?php var_dump(' . $param['value'] . ');  ?>';
+    // var_dump($angular->config);
+    $new .= '<pre>';
+    return str_replace($old, $new, $content);
 });
+
+// 自定义扩展, 变量+1
+Angular::extend('inc', function ($content, $param, $angular) {
+    $old = $param['html'];
+    $new = '<?php ' . $param['value'] . '++; ?>';
+    $new .= Angular::removeExp($old, $param['exp']);
+    return str_replace($old, $new, $content);
+});
+
+// 自定义扩展, 变量-1
+Angular::extend('dec', function ($content, $param, $angular) {
+    $old = $param['html'];
+    $new = '<?php ' . $param['value'] . '--; ?>';
+    $new .= Angular::removeExp($old, $param['exp']);
+    return str_replace($old, $new, $content);
+});
+
 
 function load($key)
 {

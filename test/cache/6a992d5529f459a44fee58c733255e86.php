@@ -111,25 +111,10 @@
 
             
             <h4>自定义解析规则</h4>
-            <pre>参数:Array
-(
-    [tag] =&gt; div
-    [exp] =&gt; php-diy=&quot;attr value&quot;
-    [attr] =&gt; diy
-    [value] =&gt; attr value
-    [html] =&gt; &lt;div php-diy=&quot;attr value&quot;&gt;
-                &lt;p&gt;hello&lt;/p&gt;
-            &lt;/div&gt;
-)
+            <pre><?php var_dump($navs);  ?><pre>
 
-解析前:
-&lt;div php-diy=&quot;attr value&quot;&gt;
-                &lt;p&gt;hello&lt;/p&gt;
-            &lt;/div&gt;
-解析后:
-&lt;div &gt;
-                &lt;p&gt;hello world&lt;/p&gt;
-            &lt;/div&gt;</pre>
+            <?php $i = 0;  $i++;  $i++; ?><div   ><?php echo $i; ?></div>
+            <?php $i--; ?><div ><?php echo $i; ?></div>
         </div>
         <div class="col-md-4">
             <h4>无限级菜单输出</h4>
