@@ -80,7 +80,7 @@
                 email: email,
                 msg: msg
             };
-            $.post('http://app/api/feedback/add', data, function(result) {
+            $.post('http://app.zhaishuaigan.cn/api/feedback/add', data, function(result) {
                 if (result.code === 0) {
                     alert('反馈成功');
                     $('input[name=name]').val('');
