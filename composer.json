@@ -2,7 +2,7 @@
     "name": "php-angular/php-angular",
     "description": "php angular view engine",
     "homepage": "http://kancloud.cn/shuai/php-angular",
-    "license": "Apache-2",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "玩具机器人",
