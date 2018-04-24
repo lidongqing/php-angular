@@ -1,6 +1,3 @@
-# 项目迁移通知  
-**当前项目已迁移至：https://github.com/top-think/think-angular 此处将不再维护， 请关注新项目地址**
-
 #php-angular
 
 > 仿angularjs的php模板引擎
