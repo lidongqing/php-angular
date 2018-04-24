@@ -13,11 +13,11 @@
         "issues": "https://github.com/php-angular/php-angular/issues"
     },
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.4.0"
     },
     "autoload": {
         "classmap": {
-            "Angular": "src/Angular.php"
+            "PHPAngular\\Angular": "src/Angular.php"
         }
     }
 }

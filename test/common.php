@@ -20,7 +20,7 @@ $config = [
 ];
 
 // 自定义扩展, 打印变量的值
-Angular::extend('dump', function ($content, $param, $angular) {
+\PHPAngular\Angular::extend('dump', function ($content, $param, $angular) {
     $old = $param['html'];
     $new = '<pre>';
     unset($param[0], $param[1], $param[2], $param[3], $param[4], $param[5]);
@@ -31,18 +31,18 @@ Angular::extend('dump', function ($content, $param, $angular) {
 });
 
 // 自定义扩展, 变量+1
-Angular::extend('inc', function ($content, $param, $angular) {
+\PHPAngular\Angular::extend('inc', function ($content, $param, $angular) {
     $old = $param['html'];
     $new = '<?php ' . $param['value'] . '++; ?>';
-    $new .= Angular::removeExp($old, $param['exp']);
+    $new .= \PHPAngular\Angular::removeExp($old, $param['exp']);
     return str_replace($old, $new, $content);
 });
 
 // 自定义扩展, 变量-1
-Angular::extend('dec', function ($content, $param, $angular) {
+\PHPAngular\Angular::extend('dec', function ($content, $param, $angular) {
     $old = $param['html'];
     $new = '<?php ' . $param['value'] . '--; ?>';
-    $new .= Angular::removeExp($old, $param['exp']);
+    $new .= \PHPAngular\Angular::removeExp($old, $param['exp']);
     return str_replace($old, $new, $content);
 });
 
@@ -53,7 +53,7 @@ function load($key)
 }
 
 // 实例化
-$view = new Angular($config);
+$view = new \PHPAngular\Angular($config);
 
 // 导航
 $navs = load('navs');
