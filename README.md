@@ -68,7 +68,7 @@ $config = [
 ];
 
 // 实例化
-$view = new Angular($config);
+$view = new PHPAngular/Angular($config);
 
 // 数据
 $data = array(
