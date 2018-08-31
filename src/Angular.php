@@ -60,7 +60,7 @@ class Angular
             return $tpl_file;
         }
         // 如果文件存在, 直接返回文件内容
-        if (file_exists($tpl_file)) {
+        if (is_file($tpl_file)) {
             $this->tpl_file = $tpl_file;
             return file_get_contents($tpl_file);
         }
